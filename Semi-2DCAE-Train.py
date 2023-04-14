@@ -11,8 +11,8 @@ from tensorflow.keras import initializers
 from tensorflow.keras import regularizers
 import seaborn as sns
 
-x_train=dataprocessing.decode_idx3_ubyte("../VpnSessionAllLayers/train-images-idx3-ubyte")
-y_train1=dataprocessing.decode_idx1_ubyte("../VpnSessionAllLayers/train-labels-idx1-ubyte")
+x_train=dataprocessing.decode_idx3_ubyte("../Vpn/train-images")
+y_train1=dataprocessing.decode_idx1_ubyte("../Vpn/train-labels")
 
 x_train, x_verification, y_train1, y_verification1 = train_test_split(x_train, y_train1, test_size=0.33, random_state=42)
 
@@ -31,9 +31,9 @@ encoder = PReLU()(encoder)
 encoder = MaxPooling2D(pool_size=2, strides=2, padding='same')(encoder)
 encoder = Flatten()(encoder)
 
-z1=Dense(units=1,name='z1')(encoder)
-z2=Dense(units=1,name='z2')(encoder)
-encoder=Concatenate(name='code')([z1,z2])
+F=Dense(units=1,name='F')(encoder)
+T=Dense(units=1,name='T')(encoder)
+encoder=Concatenate(name='code')([F,T])
 decoder = Dense(1568, activation='relu')(encoder)
 decoder = Reshape((7,7,32))(decoder)
 decoder = Conv2D(filters=32, kernel_size=3, strides=1, padding="same", kernel_initializer=initializers.he_uniform(seed=None))(decoder)
@@ -41,7 +41,7 @@ decoder = UpSampling2D((2, 2))(decoder)
 decoder = Conv2D(filters=64, kernel_size=3, strides=1, padding="same", kernel_initializer=initializers.he_uniform(seed=None))(decoder)
 decoder = UpSampling2D((2, 2))(decoder)
 output  = Conv2D(1, (3, 3), activation='sigmoid', padding='same',name='output')(decoder)
-result=Dense(units=6,activation='softmax',name='result')(z2)
+result=Dense(units=6,activation='softmax',name='result')(T)
                                                                
 AutoEncoder=Model(inputs=[input], outputs=[output], name='AutoEncoder')
 Encoder=Model(inputs=[input], outputs=[encoder], name='Encoder')
@@ -66,7 +66,7 @@ model.compile(
 #%%
 from tensorflow.keras.utils import plot_model
 import matplotlib.pyplot as plt
-save_path_result = "../0-Semi-2DCAE-idx-VpnSessionAllLayers/result"
+save_path_result = "../result"
 model.summary()
 
 plot_model(model, to_file=save_path_result+'/'+'Semi-2DCAE_model.png', show_shapes=True, )
@@ -149,11 +149,11 @@ class FlowSpectrum:
         plt.xlabel("Features Represent F")
         plt.ylabel("Features Represent T")
         plt.legend(bbox_to_anchor=(1, 1),loc=2,borderaxespad=0)
-        plt.savefig(save_path_result +'/'+'erwei.png')
+        plt.savefig(save_path_result +'/'+'2D.png')
                 
 ModelName = 'Semi-2DCAE'
 model = load_model('../result/Semi-2DCAE_model.h5')
-Encoder = Model(inputs=[model.input], outputs=[model.get_layer('z2').output], name='Encoder')
+Encoder = Model(inputs=[model.input], outputs=[model.get_layer('T').output], name='Encoder')
 coder = Model(inputs=[model.input], outputs=[model.get_layer('code').output], name='coder')
 class6_vpn = {0.0:'Chat',1.0:'Email',2.0:'File',3.0:'P2p',4.0:'Streaming',5.0:'Voip'}
 markers = {"Chat": "0.0", "Email": "1.0",'File':"2.0",'P2p':"3.0",'Streaming':"4.0",'Voip':"5.0"}
