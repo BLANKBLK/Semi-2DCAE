@@ -96,21 +96,14 @@ plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend()
 plt.savefig(save_path_result +'/'+'loss.png')
-plt.close()
-plt.show()
-# 求均值。
 plt.plot(history.history['result_accuracy'],label='result_acc')
 plt.plot(history.history['val_result_accuracy'],label='val_result_acc')
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend()
-
 plt.savefig(save_path_result +'/'+'accuracy.png')
-plt.show()
-
 #%%
-#流谱谱线生成
 import numpy as np
 class FlowSpectrum:
     def __init__(self,X,y,Labels,reconstructor,Code):
@@ -124,9 +117,8 @@ class FlowSpectrum:
         self.FlowSpectrum={}
         for label in Labels:
             self.FlowSpectrum[label]=X_decompose[y==label]
-        np.save(save_path_result+'/'+'FlowSpectrum.npy', self.FlowSpectrum)  # 保存文件
+        np.save(save_path_result+'/'+'FlowSpectrum.npy', self.FlowSpectrum) 
     def get_FlowSpectrum(self,title,save_path=save_path_result+'/'+'FlowSpectrum.png'):
-        # print(self.FlowSpectrum)
         plt.figure(figsize=(15,len(self.Labels)),dpi=400)
         for i,label in enumerate(self.Labels):
             plt.subplot(len(Labels),1,i+1)
@@ -139,9 +131,8 @@ class FlowSpectrum:
             plt.show()
         else:
             plt.savefig(save_path)
-    #二维数据可视化
     def show_latent_representation(self):
-        latent_representation = self.Code.predict(self.X) #二维潜在表征
+        latent_representation = self.Code.predict(self.X)
         plt.figure(figsize=(10, 10))
         x=[x[0] for x in latent_representation]
         y=[y[1] for y in latent_representation]
@@ -150,11 +141,11 @@ class FlowSpectrum:
         # x=[x for x in z]
         # y=[y for y in w]
         ax=sns.scatterplot(
-                        z, #第一维   
-                        w, #第二维                      
+                        z,    
+                        w,                       
                         hue=y_train1,
                         markers=markers,
-                        palette='tab10')#palette设置hue指定的变量的不同级别颜色。
+                        palette='tab10')
         plt.xlabel("Features Represent F")
         plt.ylabel("Features Represent T")
         plt.legend(bbox_to_anchor=(1, 1),loc=2,borderaxespad=0)
