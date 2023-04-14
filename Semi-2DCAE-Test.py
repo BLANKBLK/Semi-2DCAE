@@ -1,8 +1,6 @@
 
 #%%
 import dataprocessing
-from sklearn.decomposition import PCA,TruncatedSVD,FastICA
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import accuracy_score,classification_report,confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sn
