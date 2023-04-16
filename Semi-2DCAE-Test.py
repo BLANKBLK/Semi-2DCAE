@@ -82,8 +82,8 @@ if __name__=='__main__':
     Encoder = Model(inputs=[model.input], outputs=[model.get_layer('z2').output], name='Encoder')
 
     Labels = [0.0,1.0,2.0,3.0,4.0,5.0]
-    x_test=dataprocessing.decode_idx3_ubyte("../Vpn/images")
-    y_test1=dataprocessing.decode_idx1_ubyte("../Vpn/labels")
+    x_test=dataprocessing.decode_idx3_ubyte("../Vpn/test-images")
+    y_test1=dataprocessing.decode_idx1_ubyte("../Vpn/test-labels")
     x_test = x_test.reshape(-1, 28, 28, 1)/255.0
     
     FS=FlowSpectrum_detect(
